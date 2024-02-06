@@ -43,7 +43,7 @@ return [
 
         'api' => [
             'driver' => 'sanctum',
-            'provider' => 'users',
+            'provider' => 'travel_agents',
             'hash' => false,
         ],
 
@@ -72,11 +72,12 @@ return [
             'model' => App\Models\User::class,
         ],
 
-        // 'users' => [
-        //     'driver' => 'database',
-        //     'table' => 'users',
-        // ],
+        'travel_agents' => [ // Define the 'travel_agents' provider
+            'driver' => 'eloquent', // Assuming you're using Eloquent for TravelAgent model
+            'model' => App\Models\TravelAgent::class, // Adjust the model path accordingly
+        ],
     ],
+
 
     /*
     |--------------------------------------------------------------------------
