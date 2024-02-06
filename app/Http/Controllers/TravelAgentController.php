@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\TravelAgent;  
+use App\Models\TravelAgent;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -50,29 +50,28 @@ class TravelAgentController extends Controller
     public function login(Request $request)
     {
         try {
-            // Validate incoming request data
             $request->validate([
                 'email' => 'required|email',
                 'password' => 'required',
             ]);
 
-            // Retrieve login credentials from the request
             $credentials = $request->only('email', 'password');
 
-            // Attempt to authenticate the travel agent
-            if (Auth::attempt($credentials)) {
-                // Generate an access token on successful login
-                $accessToken = Auth::user()->createToken('authToken')->accessToken;
+            \Log::info('Login Attempt', ['email' => $credentials['email']]);
 
-                // Return a success response with access token
+            if (Auth::attempt($credentials)) {
+                $accessToken = Auth::user()->createToken('authToken')->accessToken;
                 return response()->json(['message' => 'Login successful', 'access_token' => $accessToken]);
             }
 
-            // Throw a validation exception for invalid login credentials
+            \Log::warning('Login Failed', ['email' => $credentials['email']]);
             throw ValidationException::withMessages(['message' => 'Invalid login credentials']);
         } catch (\Exception $e) {
-            // Handle exceptions and return an error response
+            \Log::error($e);
             return response()->json(['error' => 'Login failed', 'message' => $e->getMessage()], 401);
         }
     }
+
+
+
 }

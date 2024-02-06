@@ -15,11 +15,7 @@ class TravelAgent extends Authenticatable
      *
      * @var array
      */
-    protected $fillable = [
-        'name',
-        'email',
-        'password',
-    ];
+    protected $fillable = ['name', 'email', 'password'];
 
     /**
      * The attributes that should be hidden for arrays.
@@ -40,5 +36,5 @@ class TravelAgent extends Authenticatable
         'email_verified_at' => 'datetime',
     ];
 
-  
+
 }
