@@ -28,22 +28,24 @@ class AuthController extends Controller
 
     // login
     public function login(Request $request)
-{
-    $request->validate([
-        'email' => 'required|email',
-        'password' => 'required',
-    ]);
+    {
+        $request->validate([
+            'email' => 'required|email',
+            'password' => 'required',
+        ]);
 
-    $credentials = $request->only('email', 'password');
+        $credentials = $request->only('email', 'password');
 
-    if (Auth::attempt($credentials)) {
-        $user = Auth::user();
-        $accessToken = $user->createToken('authToken')->accessToken;
+        // Authenticate the travel agent using the 'travel_agents' guard
+        if (Auth::guard('travel_agents')->attempt($credentials)) {
+            $travelAgent = Auth::guard('travel_agents')->user();
+            $accessToken = $travelAgent->createToken('authToken')->accessToken;
 
-        return response()->json(['message' => 'Login successful', 'access_token' => $accessToken]);
+            return response()->json(['message' => 'Login successful', 'access_token' => $accessToken]);
+        }
+
+        return response()->json(['error' => 'Invalid login credentials'], 401);
     }
 
-    return response()->json(['error' => 'Invalid login credentials'], 401);
-}
 
 }
