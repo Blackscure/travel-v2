@@ -28,8 +28,8 @@ class AccommodationController extends Controller
     }
 
     // Create a new accommodation
-   
-    public function create_accomodation(Request $request)
+
+    public function create_accommodation(Request $request)
     {
         try {
             // Validate the request data
@@ -54,7 +54,7 @@ class AccommodationController extends Controller
 
 
     // Update an existing accommodation by ID
-    public function update(Request $request, $id)
+    public function update_accomodation(Request $request, $id)
     {
         $request->validate([
             'name' => 'required',
