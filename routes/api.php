@@ -21,7 +21,7 @@ Route::post('login', [AuthController::class, 'login']);
 Route::post('/accommodations', [AccommodationController::class, 'create_accommodation']);
 Route::get('/accommodations', [AccommodationController::class, 'index']);
 Route::get('/accommodations/{id}', [AccommodationController::class, 'show']);
-Route::put('/accommodations/{id}', [AccommodationController::class, 'update']);
+Route::put('/accommodations/{id}', [AccommodationController::class, 'update_accomodation']);
 Route::delete('/accommodations/{id}', [AccommodationController::class, 'destroy']);
 
 Route::apiResource('contracts', ContractController::class);
