@@ -39,6 +39,13 @@ class AccommodationController extends Controller
                 'standard_rack_rate' => 'required|numeric',
             ]);
 
+            // Check if the accommodation with the given name already exists
+            $existingAccommodation = Accommodation::where('name', $request->input('name'))->first();
+
+            if ($existingAccommodation) {
+                return response()->json(['error' => 'Accommodation already exists', 'data' => $existingAccommodation], Response::HTTP_CONFLICT);
+            }
+
             // Create a new accommodation
             $accommodation = Accommodation::create($request->all());
 
@@ -52,6 +59,7 @@ class AccommodationController extends Controller
             return response()->json(['error' => 'Accommodation creation failed', 'message' => $e->getMessage()], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
+
 
 
 
