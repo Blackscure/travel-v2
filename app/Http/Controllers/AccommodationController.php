@@ -43,12 +43,17 @@ class AccommodationController extends Controller
             $accommodation = Accommodation::create($request->all());
 
             // Return the created accommodation with a success response
-            return response()->json($accommodation, Response::HTTP_CREATED);
+            return response()->json([
+                'message' => 'Accommodation created successfully',
+                'data' => $accommodation,
+            ], Response::HTTP_CREATED);
         } catch (\Exception $e) {
             // Handle any exceptions that occur during the process
             return response()->json(['error' => 'Accommodation creation failed', 'message' => $e->getMessage()], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
+
+
 
 
 
