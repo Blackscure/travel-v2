@@ -9,11 +9,19 @@ use App\Models\Accommodation;
 class AccommodationController extends Controller
 {
     // Retrieve all accommodations
-    public function index()
-    {
+   // Retrieve all accommodations
+public function index()
+{
+    try {
         $accommodations = Accommodation::all();
-        return response()->json($accommodations, Response::HTTP_OK);
+
+        // Wrap the response in a 'data' array
+        return response()->json(['data' => $accommodations], Response::HTTP_OK);
+    } catch (\Exception $e) {
+        // Handle any exceptions that occur during the process
+        return response()->json(['error' => 'Error retrieving accommodations', 'message' => $e->getMessage()], Response::HTTP_INTERNAL_SERVER_ERROR);
     }
+}
 
     // Retrieve a specific accommodation by ID
     public function show($id)
