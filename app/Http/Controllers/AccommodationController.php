@@ -91,7 +91,10 @@ public function index()
 
         $accommodation->update($request->all());
 
-        return response()->json($accommodation, Response::HTTP_OK);
+        return response()->json([
+            'message' => 'Accommodation updated successfully',
+            'data' => $accommodation,
+        ], Response::HTTP_OK);
     }
 
     // Delete an accommodation by ID
