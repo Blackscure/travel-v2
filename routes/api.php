@@ -17,6 +17,11 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 Route::post('register', [AuthController::class, 'register']);
 Route::post('login', [AuthController::class, 'login']);
-Route::resource('accommodations', AccommodationController::class);
+
+Route::post('/accommodations', [AccommodationController::class, 'create_accommodation']);
+Route::get('/accommodations', [AccommodationController::class, 'index']);
+Route::get('/accommodations/{id}', [AccommodationController::class, 'show']);
+Route::put('/accommodations/{id}', [AccommodationController::class, 'update']);
+Route::delete('/accommodations/{id}', [AccommodationController::class, 'destroy']);
 
 Route::apiResource('contracts', ContractController::class);
