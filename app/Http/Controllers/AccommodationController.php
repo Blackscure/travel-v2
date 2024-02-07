@@ -1,69 +1,102 @@
 <?php
 
-
 namespace App\Http\Controllers;
 
-use App\Models\Accommodation;
 use Illuminate\Http\Request;
-use Illuminate\Database\QueryException;
+use Illuminate\Http\Response;
+use App\Models\Accommodation;
 
 class AccommodationController extends Controller
 {
+    // Retrieve all accommodations
     public function index()
     {
-        return Accommodation::all();
+        $accommodations = Accommodation::all();
+        return response()->json($accommodations, Response::HTTP_OK);
     }
 
+    // Retrieve a specific accommodation by ID
     public function show($id)
     {
-        return Accommodation::findOrFail($id);
+        $accommodation = Accommodation::find($id);
+
+        if (!$accommodation) {
+            return response()->json(['error' => 'Accommodation not found'], Response::HTTP_NOT_FOUND);
+        }
+
+        return response()->json($accommodation, Response::HTTP_OK);
     }
 
-    public function store(Request $request)
+    // Create a new accommodation
+
+    public function create_accommodation(Request $request)
     {
         try {
+            // Validate the request data
             $request->validate([
                 'name' => 'required',
                 'description' => 'required',
                 'standard_rack_rate' => 'required|numeric',
             ]);
 
-            // Attempt to create a new Accommodation
+            // Check if the accommodation with the given name already exists
+            $existingAccommodation = Accommodation::where('name', $request->input('name'))->first();
+
+            if ($existingAccommodation) {
+                return response()->json(['error' => 'Accommodation already exists', 'data' => $existingAccommodation], Response::HTTP_CONFLICT);
+            }
+
+            // Create a new accommodation
             $accommodation = Accommodation::create($request->all());
 
-            // Return a success response
-            return response()->json(['message' => 'Accommodation created successfully', 'accommodation' => $accommodation], 201);
-        } catch (QueryException $e) {
-            // Handle database query exception
-            return response()->json(['error' => 'Accommodation creation failed', 'message' => $e->getMessage()], 500);
+            // Return the created accommodation with a success response
+            return response()->json([
+                'message' => 'Accommodation created successfully',
+                'data' => $accommodation,
+            ], Response::HTTP_CREATED);
         } catch (\Exception $e) {
-            // Handle other exceptions
-            return response()->json(['error' => 'Accommodation creation failed', 'message' => $e->getMessage()], 400);
+            // Handle any exceptions that occur during the process
+            return response()->json(['error' => 'Accommodation creation failed', 'message' => $e->getMessage()], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
 
 
-    public function update(Request $request, $id)
-    {
-        $accommodation = Accommodation::findOrFail($id);
 
+
+
+
+
+    // Update an existing accommodation by ID
+    public function update_accomodation(Request $request, $id)
+    {
         $request->validate([
             'name' => 'required',
             'description' => 'required',
             'standard_rack_rate' => 'required|numeric',
-            // Add validation for other fields as needed
         ]);
+
+        $accommodation = Accommodation::find($id);
+
+        if (!$accommodation) {
+            return response()->json(['error' => 'Accommodation not found'], Response::HTTP_NOT_FOUND);
+        }
 
         $accommodation->update($request->all());
 
-        return $accommodation;
+        return response()->json($accommodation, Response::HTTP_OK);
     }
 
+    // Delete an accommodation by ID
     public function destroy($id)
     {
-        $accommodation = Accommodation::findOrFail($id);
+        $accommodation = Accommodation::find($id);
+
+        if (!$accommodation) {
+            return response()->json(['error' => 'Accommodation not found'], Response::HTTP_NOT_FOUND);
+        }
+
         $accommodation->delete();
 
-        return ['message' => 'Accommodation deleted successfully'];
+        return response()->json(['message' => 'Accommodation deleted successfully'], Response::HTTP_OK);
     }
 }
