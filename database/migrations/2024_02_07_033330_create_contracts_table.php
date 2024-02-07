@@ -20,7 +20,7 @@ class CreateContractsTable extends Migration
             $table->decimal('contract_rates', 10, 2);
             $table->date('start_date');
             $table->date('end_date');
-            // Add other columns as needed
+            // Add other fields as needed
             $table->timestamps();
 
             // Define foreign key constraints

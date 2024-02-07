@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateTravelAgentsTable extends Migration
+class CreateAccommodationsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,13 +13,12 @@ class CreateTravelAgentsTable extends Migration
      */
     public function up()
     {
-        Schema::create('travel_agents', function (Blueprint $table) {
+        Schema::create('accommodations', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->string('email')->unique();
-            $table->timestamp('email_verified_at')->nullable();
-            $table->string('password');
-            $table->rememberToken();
+            $table->text('description');
+            $table->decimal('standard_rack_rate', 10, 2);
+            // Add other fields as needed
             $table->timestamps();
         });
     }
@@ -31,6 +30,6 @@ class CreateTravelAgentsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('travel_agents');
+        Schema::dropIfExists('accommodations');
     }
 }
