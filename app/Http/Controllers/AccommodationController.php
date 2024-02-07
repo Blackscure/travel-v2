@@ -1,69 +1,71 @@
 <?php
 
-
 namespace App\Http\Controllers;
 
 use App\Models\Accommodation;
 use Illuminate\Http\Request;
-use Illuminate\Database\QueryException;
+use Illuminate\Http\Response;
 
 class AccommodationController extends Controller
 {
     public function index()
     {
-        return Accommodation::all();
+        $accommodations = Accommodation::all();
+        return response()->json($accommodations, Response::HTTP_OK);
     }
 
     public function show($id)
     {
-        return Accommodation::findOrFail($id);
+        $accommodation = Accommodation::find($id);
+
+        if (!$accommodation) {
+            return response()->json(['error' => 'Accommodation not found'], Response::HTTP_NOT_FOUND);
+        }
+
+        return response()->json($accommodation, Response::HTTP_OK);
     }
 
     public function store(Request $request)
     {
-        try {
-            $request->validate([
-                'name' => 'required',
-                'description' => 'required',
-                'standard_rack_rate' => 'required|numeric',
-            ]);
-
-            // Attempt to create a new Accommodation
-            $accommodation = Accommodation::create($request->all());
-
-            // Return a success response
-            return response()->json(['message' => 'Accommodation created successfully', 'accommodation' => $accommodation], 201);
-        } catch (QueryException $e) {
-            // Handle database query exception
-            return response()->json(['error' => 'Accommodation creation failed', 'message' => $e->getMessage()], 500);
-        } catch (\Exception $e) {
-            // Handle other exceptions
-            return response()->json(['error' => 'Accommodation creation failed', 'message' => $e->getMessage()], 400);
-        }
-    }
-
-
-    public function update(Request $request, $id)
-    {
-        $accommodation = Accommodation::findOrFail($id);
-
         $request->validate([
             'name' => 'required',
             'description' => 'required',
             'standard_rack_rate' => 'required|numeric',
-            // Add validation for other fields as needed
         ]);
+
+        $accommodation = Accommodation::create($request->all());
+        return response()->json($accommodation, Response::HTTP_CREATED);
+    }
+
+    public function update(Request $request, $id)
+    {
+        $request->validate([
+            'name' => 'required',
+            'description' => 'required',
+            'standard_rack_rate' => 'required|numeric',
+        ]);
+
+        $accommodation = Accommodation::find($id);
+
+        if (!$accommodation) {
+            return response()->json(['error' => 'Accommodation not found'], Response::HTTP_NOT_FOUND);
+        }
 
         $accommodation->update($request->all());
 
-        return $accommodation;
+        return response()->json($accommodation, Response::HTTP_OK);
     }
 
     public function destroy($id)
     {
-        $accommodation = Accommodation::findOrFail($id);
+        $accommodation = Accommodation::find($id);
+
+        if (!$accommodation) {
+            return response()->json(['error' => 'Accommodation not found'], Response::HTTP_NOT_FOUND);
+        }
+
         $accommodation->delete();
 
-        return ['message' => 'Accommodation deleted successfully'];
+        return response()->json(['message' => 'Accommodation deleted successfully'], Response::HTTP_OK);
     }
 }
