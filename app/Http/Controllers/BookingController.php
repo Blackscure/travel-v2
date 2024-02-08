@@ -25,7 +25,7 @@ class BookingController extends Controller
         return response()->json($booking, Response::HTTP_OK);
     }
 
-    public function store(Request $request)
+    public function create_booking(Request $request)
     {
         $request->validate([
             'accommodation_id' => 'required',
@@ -42,7 +42,7 @@ class BookingController extends Controller
         ], Response::HTTP_CREATED);
     }
 
-    public function update(Request $request, $id)
+    public function update_booking(Request $request, $id)
     {
         $request->validate([
             'accommodation_id' => 'required',

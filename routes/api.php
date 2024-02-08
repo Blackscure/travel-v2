@@ -3,9 +3,8 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AccommodationController;
-
+use App\Http\Controllers\BookingController;
 use App\Http\Controllers\AuthController;
-
 use App\Http\Controllers\ContractController;
 
 // Existing Sanctum route
@@ -28,5 +27,11 @@ Route::get('/accommodations', [AccommodationController::class, 'index']);
 Route::get('/accommodations/{id}', [AccommodationController::class, 'show']);
 Route::put('/accommodations/{id}', [AccommodationController::class, 'update_accomodation']);
 Route::delete('/accommodations/{id}', [AccommodationController::class, 'destroy']);
+
+Route::get('/bookings', [BookingController::class, 'index']);          // Get all bookings
+Route::get('/bookings/{id}', [BookingController::class, 'show']);      // Get a specific booking
+Route::post('/create-bookings', [BookingController::class, 'create_booking']);          // Create a new booking
+Route::put('/bookings/{id}', [BookingController::class, 'update']);     // Update a booking
+Route::delete('/bookings/{id}', [BookingController::class, 'destroy']); // Delete a booking
 
 Route::apiResource('contracts', ContractController::class);
