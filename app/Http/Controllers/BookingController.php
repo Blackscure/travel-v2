@@ -14,7 +14,7 @@ class BookingController extends Controller
         $bookings = Booking::with(['user', 'accommodation'])->get();
 
         // Return the JSON response with the bookings
-        return response()->json($bookings, Response::HTTP_OK);
+        return response()->json(['data' => $bookings], Response::HTTP_OK);
     }
 
     public function show($id)
