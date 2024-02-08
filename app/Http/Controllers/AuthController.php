@@ -55,4 +55,52 @@ class AuthController extends Controller
             return response()->json(['error' => 'Unable to fetch users', 'message' => $e->getMessage()], 500);
         }
     }
+
+    public function updateUser(Request $request, $id)
+    {
+        try {
+            $validator = Validator::make($request->all(), [
+                'name' => 'required',
+                'email' => 'required|email|unique:users,email,' . $id,
+                'password' => 'required|min:6',
+            ]);
+
+            if ($validator->fails()) {
+                return response()->json(['error' => $validator->errors()], 422);
+            }
+
+            $user = User::find($id);
+
+            if (!$user) {
+                return response()->json(['error' => 'User not found'], 404);
+            }
+
+            $user->name = $request->input('name');
+            $user->email = $request->input('email');
+            $user->password = bcrypt($request->input('password'));
+            $user->save();
+
+            return response()->json(['message' => 'User updated successfully', 'data' => $user], 200);
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'User update failed', 'message' => $e->getMessage()], 500);
+        }
+    }
+
+    // Del method
+    public function deleteUser($id)
+    {
+        try {
+            $user = User::find($id);
+
+            if (!$user) {
+                return response()->json(['error' => 'User not found'], 404);
+            }
+
+            $user->delete();
+
+            return response()->json(['message' => 'User deleted successfully'], 200);
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'User deletion failed', 'message' => $e->getMessage()], 500);
+        }
+    }
 }
