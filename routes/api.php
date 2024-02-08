@@ -31,7 +31,7 @@ Route::delete('/accommodations/{id}', [AccommodationController::class, 'destroy'
 Route::get('/bookings', [BookingController::class, 'get_bookings']);          // Get all bookings
 Route::get('/bookings/{id}', [BookingController::class, 'show']);      // Get a specific booking
 Route::post('/create-bookings', [BookingController::class, 'create_booking']);          // Create a new booking
-Route::put('/bookings/{id}', [BookingController::class, 'update']);     // Update a booking
+Route::put('/bookings/{id}', [BookingController::class, 'update_booking']);     // Update a booking
 Route::delete('/bookings/{id}', [BookingController::class, 'destroy']); // Delete a booking
 
 Route::apiResource('contracts', ContractController::class);
