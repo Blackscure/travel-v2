@@ -27,19 +27,43 @@ class BookingController extends Controller
 
     public function create_booking(Request $request)
     {
-        $request->validate([
-            'accommodation_id' => 'required',
-            'user_id' => 'required',
-            'start_date' => 'required|date',
-            'end_date' => 'required|date|after:start_date',
-        ]);
+        try {
+            $request->validate([
+                'accommodation_id' => 'required',
+                'user_id' => 'required', // Update to 'travel_agent_id'
+                'start_date' => 'required|date',
+                'end_date' => 'required|date|after:start_date',
+            ]);
 
-        $booking = Booking::create($request->all());
+            // Check if a booking with the same accommodation, travel_agent, and overlapping dates already exists
+            $existingBooking = Booking::where('accommodation_id', $request->accommodation_id)
+                ->where('user_id', $request->user_id)
+                ->where(function ($query) use ($request) {
+                    $query->whereBetween('start_date', [$request->start_date, $request->end_date])
+                        ->orWhereBetween('end_date', [$request->start_date, $request->end_date]);
+                })
+                ->first();
 
-        return response()->json([
-            'message' => 'Booking created successfully',
-            'data' => $booking,
-        ], Response::HTTP_CREATED);
+            if ($existingBooking) {
+                return response()->json([
+                    'error' => 'Booking already exists for the selected accommodation and dates',
+                    'data' => $existingBooking,
+                ], Response::HTTP_CONFLICT);
+            }
+
+            // If no existing booking found, create a new booking
+            $booking = Booking::create($request->all());
+
+            return response()->json([
+                'message' => 'Booking created successfully',
+                'data' => $booking,
+            ], Response::HTTP_CREATED);
+        } catch (\Exception $e) {
+            return response()->json([
+                'error' => 'Booking creation failed',
+                'message' => $e->getMessage(),
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
     }
 
     public function update_booking(Request $request, $id)
