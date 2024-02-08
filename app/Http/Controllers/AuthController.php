@@ -45,4 +45,14 @@ class AuthController extends Controller
 
         return response()->json(['error' => 'Invalid login credentials'], 401);
     }
+
+    public function getAllUsers()
+    {
+        try {
+            $users = User::all();
+            return response()->json($users, 200);
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'Unable to fetch users', 'message' => $e->getMessage()], 500);
+        }
+    }
 }
