@@ -76,26 +76,37 @@ class BookingController extends Controller
 
     public function update_booking(Request $request, $id)
     {
-        $request->validate([
-            'accommodation_id' => 'required',
-            'user_id' => 'required',
-            'start_date' => 'required|date',
-            'end_date' => 'required|date|after:start_date',
-        ]);
+        try {
+            // Validate the request data
+            $request->validate([
+                'accommodation_id' => 'required',
+                'user_id' => 'required',
+                'start_date' => 'required|date',
+                'end_date' => 'required|date|after:start_date',
+            ]);
 
-        $booking = Booking::find($id);
+            // Find the booking by ID
+            $booking = Booking::find($id);
 
-        if (!$booking) {
-            return response()->json(['error' => 'Booking not found'], Response::HTTP_NOT_FOUND);
+            // Check if the booking exists
+            if (!$booking) {
+                return response()->json(['error' => 'Booking not found'], Response::HTTP_NOT_FOUND);
+            }
+
+            // Update the booking with the new data
+            $booking->update($request->all());
+
+            // Return success message along with the updated booking
+            return response()->json([
+                'message' => 'Booking updated successfully',
+                'data' => $booking,
+            ], Response::HTTP_OK);
+        } catch (\Exception $e) {
+            // Handle any exceptions that occur during the update process
+            return response()->json(['error' => 'Booking update failed', 'message' => $e->getMessage()], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
-
-        $booking->update($request->all());
-
-        return response()->json([
-            'message' => 'Booking updated successfully',
-            'data' => $booking,
-        ], Response::HTTP_OK);
     }
+
 
     public function destroy($id)
     {
