@@ -10,11 +10,16 @@ class BookingController extends Controller
 {
     public function get_bookings()
     {
-        // Retrieve bookings with associated user and accommodation information
-        $bookings = Booking::with(['user', 'accommodation'])->get();
+        try {
+            // Retrieve bookings with associated user and accommodation information
+            $bookings = Booking::with(['user', 'accommodation'])->get();
 
-        // Return the JSON response with the bookings
-        return response()->json(['data' => $bookings], Response::HTTP_OK);
+            // Return the JSON response with the bookings wrapped in a 'data' array
+            return response()->json(['data' => $bookings], Response::HTTP_OK);
+        } catch (\Exception $e) {
+            // Handle any exceptions that occur during the process
+            return response()->json(['error' => 'Failed to retrieve bookings', 'message' => $e->getMessage()], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
     }
 
     public function show($id)
