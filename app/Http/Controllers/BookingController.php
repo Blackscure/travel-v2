@@ -10,7 +10,8 @@ class BookingController extends Controller
 {
     public function get_bookings()
     {
-        $bookings = Booking::all();
+        $bookings = Booking::with(['user', 'accommodation'])->get();
+
         return response()->json($bookings, Response::HTTP_OK);
     }
 
