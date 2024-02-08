@@ -8,7 +8,7 @@ use Illuminate\Http\Response;
 
 class BookingController extends Controller
 {
-    public function index()
+    public function get_bookings()
     {
         $bookings = Booking::all();
         return response()->json($bookings, Response::HTTP_OK);
